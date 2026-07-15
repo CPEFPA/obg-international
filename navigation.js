@@ -1,185 +1,70 @@
 // ===================================
-// NAVIGATION SYSTEM
+// NAVIGATION SYSTEM (Mobile & Desktop)
 // ===================================
 
 const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('navMenu');
 const dropdowns = document.querySelectorAll('.dropdown');
 
-// ===================================
-// MOBILE MENU TOGGLE
-// ===================================
-hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('active');
-    navMenu.classList.toggle('active');
-    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
-});
+// 1. Ouvrir / Fermer le menu mobile au clic sur le hamburger
+if (hamburger) {
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation(); // Empêche le clic de se propager
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        
+        // Empêche le scroll du site quand le menu est ouvert
+        if (navMenu.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    });
+}
 
-// Close menu when clicking outside
+// 2. Fermer le menu si on clique en dehors
 document.addEventListener('click', (e) => {
-    if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-        document.body.style.overflow = '';
+    if (navMenu && navMenu.classList.contains('active')) {
+        if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
     }
 });
 
-// ===================================
-// DROPDOWN MENU (MOBILE)
-// ===================================
+// 3. Gérer les sous-menus (dropdowns) sur mobile
 dropdowns.forEach(dropdown => {
     const navLink = dropdown.querySelector('.nav-link');
     
     navLink.addEventListener('click', (e) => {
-        // Only prevent default on mobile
+        // Uniquement sur mobile (écran < 992px)
         if (window.innerWidth <= 991) {
-            e.preventDefault();
-            dropdown.classList.toggle('active');
+            e.preventDefault(); // Empêche le lien de changer de page immédiatement
             
-            // Close other dropdowns
+            // Ferme les autres menus ouverts
             dropdowns.forEach(otherDropdown => {
                 if (otherDropdown !== dropdown) {
                     otherDropdown.classList.remove('active');
                 }
             });
+            
+            // Ouvre/Ferme le menu actuel
+            dropdown.classList.toggle('active');
         }
     });
 });
 
-// ===================================
-// SMOOTH SCROLL WITH OFFSET
-// ===================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const href = this.getAttribute('href');
-        
-        // Skip if it's just "#"
-        if (href === '#') return;
-        
-        e.preventDefault();
-        
-        const target = document.querySelector(href);
-        if (target) {
-            const offsetTop = target.offsetTop - 80; // 80px for navbar height
-            
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-            
-            // Close mobile menu
-            if (window.innerWidth <= 991) {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-            
-            // Close dropdowns
-            dropdowns.forEach(dropdown => {
-                dropdown.classList.remove('active');
-            });
+// 4. Fermer le menu automatiquement quand on clique sur un lien final
+document.querySelectorAll('.dropdown-menu a, .nav-link[href^="index.html"], .nav-link[href="index.html"]').forEach(link => {
+    link.addEventListener('click', () => {
+        if (window.innerWidth <= 991) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.style.overflow = '';
+            dropdowns.forEach(d => d.classList.remove('active'));
         }
     });
 });
 
-// ===================================
-// ACTIVE SECTION HIGHLIGHTING
-// ===================================
-const sections = document.querySelectorAll('section[id], div[id]');
-const navLinks = document.querySelectorAll('.nav-link');
-
-const observerOptions = {
-    root: null,
-    rootMargin: '-20% 0px -80% 0px',
-    threshold: 0
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const id = entry.target.getAttribute('id');
-            
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${id}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
-    });
-}, observerOptions);
-
-sections.forEach(section => {
-    observer.observe(section);
-});
-
-// ===================================
-// NAVBAR HIDE ON SCROLL DOWN
-// ===================================
-let lastScrollTop = 0;
-const navbar = document.getElementById('navbar');
-
-window.addEventListener('scroll', throttle(() => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Scrolling down
-        navbar.style.transform = 'translateY(-100%)';
-    } else {
-        // Scrolling up
-        navbar.style.transform = 'translateY(0)';
-    }
-    
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-}, 100));
-
-// ===================================
-// UTILITY FUNCTIONS
-// ===================================
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// ===================================
-// RESPONSIVE HANDLING
-// ===================================
-let windowWidth = window.innerWidth;
-
-window.addEventListener('resize', debounce(() => {
-    const newWidth = window.innerWidth;
-    
-    // Reset mobile menu on resize to desktop
-    if (newWidth > 991 && windowWidth <= 991) {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-        document.body.style.overflow = '';
-        dropdowns.forEach(dropdown => {
-            dropdown.classList.remove('active');
-        });
-    }
-    
-    windowWidth = newWidth;
-}, 250));
-
-console.log('Navigation system initialized');
+console.log('✅ Navigation mobile corrigée et active');
