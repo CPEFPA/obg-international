@@ -11,6 +11,21 @@ AOS.init({
 });
 
 // ===================================
+// ENREGISTRER LE SERVICE WORKER (PWA)
+// ===================================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/obg-international/sw.js')
+            .then(registration => {
+                console.log('✅ Service Worker enregistré:', registration);
+            })
+            .catch(error => {
+                console.log('❌ Erreur Service Worker:', error);
+            });
+    });
+}
+
+// ===================================
 // NAVIGATION SCROLL EFFECT
 // ===================================
 const navbar = document.getElementById('navbar');
@@ -219,3 +234,33 @@ document.addEventListener('keydown', (e) => {
 // ===================================
 console.log('%c OBG International ', 'background: #1e3a8a; color: #d4af37; padding: 10px; font-size: 20px; font-weight: bold;');
 console.log('%c Cadre de Partenariat pour le Développement Culturel de Ouidah ', 'background: #d4af37; color: #1e3a8a; padding: 5px; font-size: 14px;');
+
+// ===================================
+// TÉLÉCHARGEMENT PDF
+// ===================================
+function downloadPDF() {
+    const element = document.body;
+    const opt = {
+        margin: 0.5,
+        filename: 'OBG-International-Cadre-Partenariat-Ouidah.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    
+    // Afficher un message de chargement
+    const btn = event.target.closest('.btn-pdf');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Génération en cours...';
+    btn.disabled = true;
+    
+    // Générer le PDF
+    html2pdf().set(opt).from(element).save().then(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }).catch(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        alert('Erreur lors de la génération du PDF. Veuillez réessayer.');
+    });
+}
