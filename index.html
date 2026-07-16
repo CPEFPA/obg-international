@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="OBG International - Cadre de Partenariat pour le Développement Culturel de Ouidah">
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OBG Ouidah">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <title>OBG International | Développement Culturel de Ouidah</title>
     
     <!-- Google Fonts -->
@@ -110,7 +117,7 @@
             <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="400">
                 Ensemble, bâtissons l'avenir culturel d'une ville patrimoine
             </p>
-            <div class="hero-buttons" data-aos="fade-up" data-aos-delay="600">
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="600">
                 <a href="cadre-partenariat.html" class="btn btn-primary">
                     <i class="fas fa-arrow-right"></i>
                     Découvrir le Projet
@@ -119,8 +126,11 @@
                     <i class="fas fa-building"></i>
                     OBG International
                 </a>
+                <button onclick="downloadPDF()" class="btn btn-pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    Télécharger le PDF
+                </button>
             </div>
-        </div>
         <div class="scroll-indicator">
             <i class="fas fa-chevron-down"></i>
         </div>
@@ -156,6 +166,9 @@
             </div>
         </div>
     </footer>
+
+        <!-- HTML2PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/4.1.0/html2pdf.min.js"></script>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

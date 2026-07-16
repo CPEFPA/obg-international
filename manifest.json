@@ -1,0 +1,24 @@
+{
+  "name": "OBG International - Développement Culturel de Ouidah",
+  "short_name": "OBG Ouidah",
+  "description": "Cadre de Partenariat pour le Développement Culturel de Ouidah",
+  "start_url": "/obg-international/",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#d4af37",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
